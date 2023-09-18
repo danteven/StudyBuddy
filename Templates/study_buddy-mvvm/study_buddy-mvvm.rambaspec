@@ -1,0 +1,26 @@
+# Template information section
+name: study_buddy-mvvm
+summary: study_buddy-mvvm
+author: Shamil mazitov
+version: 1.0.0
+license: "Mit"
+
+# The declarations for code files
+code_files:
+
+
+code_files:
+# Configurator
+- {name: ModuleConfigurator.swift, path: Code/Configurator/module_configurator.swift.liquid}
+
+# View layer
+- {name: ViewController.swift, path: Code/View/view_controller.swift.liquid}
+
+# ViewModel layer
+- {name: ViewModel.swift, path: Code/ViewModel/viewModel.swift.liquid}
+
+# ModuleOutput layer
+- {name: ModuleOutput.swift, path: Code/ViewModel/moduleOutput.swift.liquid}
+
+# Template dependencies
+dependencies:

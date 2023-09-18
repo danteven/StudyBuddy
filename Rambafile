@@ -1,0 +1,21 @@
+### Headers settings
+company: StudyBuddy
+
+### Xcode project settings
+project_name: StudyBuddy
+product_module_name: StudyBuddy
+xcodeproj_path: StudyBuddy.xcodeproj
+
+### Code generation settings section
+# The main project target name
+project_target: StudyBuddy
+
+# The file path for new modules
+project_file_path: Modules
+
+catalogs:
+- 'https://github.com/danteven/ios_template'
+
+### Templates
+templates:
+- {name: study_buddy-mvvm }

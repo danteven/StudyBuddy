@@ -1,0 +1,39 @@
+//
+//  {{ module_info.file_name }}
+//  {{ module_info.project_name }}
+//
+//  Created by {{ developer.name }} on {{ date }}.
+//  Copyright © {{ year }} {{ developer.company }}. All rights reserved.
+//
+
+import Combine
+
+final class {{ module_info.name }}ViewModel {
+
+    // MARK: - Private Properties
+
+    private var output: {{ module_info.name }}ModuleOutput
+    private var cancellableSet = Set<AnyCancellable>()
+
+    // MARK: - Init
+
+    init(output: {{ module_info.name }}ModuleOutput) {
+        self.output = output
+        bind()
+    }
+
+}
+
+// MARK: - Private methods
+
+private extension {{ module_info.name }}ViewModel {
+
+    func bind() {
+
+    }
+
+}
+
+
+
+
