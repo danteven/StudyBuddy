@@ -8,6 +8,8 @@
 
 protocol PhoneSignInViewModuleOutput {
 
+    func enterCodeView()
+    
 }
 
 

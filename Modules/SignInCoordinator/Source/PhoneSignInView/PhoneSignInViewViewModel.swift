@@ -29,6 +29,10 @@ final class PhoneSignInViewViewModel {
         self.output = output
         bind()
     }
+    
+    func enterCodeView() {
+        output.enterCodeView()
+    }
 
 }
 

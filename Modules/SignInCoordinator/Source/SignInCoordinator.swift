@@ -23,4 +23,7 @@ public class SignInCoordinator {
         window.makeKeyAndVisible()
     }
 }
-extension SignInCoordinator: PhoneSignInViewModuleOutput { }
+extension SignInCoordinator: PhoneSignInViewModuleOutput {
+    func enterCodeView() {
+    }
+}
