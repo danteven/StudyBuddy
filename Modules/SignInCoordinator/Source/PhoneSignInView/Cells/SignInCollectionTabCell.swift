@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Common
 
 class SignInCollectionTabCell: UICollectionViewCell {
     
@@ -19,10 +20,10 @@ class SignInCollectionTabCell: UICollectionViewCell {
         didSet {
             titleLabel.textColor = isSelected ?
             .black :
-            SignInCoordinatorAsset.Colors.grey.color
+            CommonAsset.Colors.grey.color
             
             line.backgroundColor = isSelected ?
-            SignInCoordinatorAsset.Colors.mainPurple.color :
+            CommonAsset.Colors.mainPurple.color :
             .clear
         }
     }
@@ -49,7 +50,7 @@ private extension SignInCollectionTabCell {
         addSubview(titleLabel)
         titleLabel.pinToSuperView(sides: .topR, .rightR, .leftR)
         titleLabel.font = .systemFont(ofSize: 16)
-        titleLabel.textColor = SignInCoordinatorAsset.Colors.grey.color
+        titleLabel.textColor = CommonAsset.Colors.grey.color
         
         addSubview(line)
         line.pinToSuperView(sides: .bottomR)

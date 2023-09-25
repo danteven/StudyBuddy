@@ -17,6 +17,7 @@ let project = Project(
             resources: ["Resources/**"],
             dependencies: [
                 .package(product: "PhoneNumberKit"),
+                .project(target: "Common", path: "../../Common"),
                 
             ]
         )

@@ -7,14 +7,18 @@
 
 import Foundation
 import UIKit
+import Common
 import SignInCoordinator
 
 class MainCoordinator: BaseCoordinator {
     
-    private let mainWindow: UIWindow
+    private let mainWindow: UIWindowScene
     
-    init(window: UIWindow) {
+    private let router: MainRouter
+    
+    init(window: UIWindowScene) {
         self.mainWindow = window
+        router = MainRouter(windowScene: window)
         super.init()
         bind()
     }
@@ -32,7 +36,11 @@ class MainCoordinator: BaseCoordinator {
     }
 
     func startSignInFlow() {
-        SignInCoordinator().startCoordinator(from: mainWindow)
+        let coordinator = SignInCoordinator(router: router)
+        let navigationControoler = UINavigationController()
+        router.setRootModule(navigationControoler)
+        coordinator.startCoordinator()
+        addDependency(coordinator)
     }
 }
 

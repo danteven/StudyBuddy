@@ -8,22 +8,33 @@
 
 import Foundation
 import UIKit
-import UIKit
+import Common
 
-public class SignInCoordinator {
-
-    public init() { }
+public class SignInCoordinator: BaseCoordinator {
     
-    public func startCoordinator(from window: UIWindow) {
+    private let router: Router
+    
+    public init(router: Router) {
+        self.router = router
+    }
+    
+    public func startCoordinator() {
         let vc = PhoneSignInViewConfigurator().configure(output: self)
         vc.view.backgroundColor = .white
-
-        let navigationControoler = UINavigationController(rootViewController: vc)
-        window.rootViewController = navigationControoler
-        window.makeKeyAndVisible()
+//        router.setRootModule(vc)
+        router.setNavigationControllerRootModule(vc, animated: true, hideBar: true)
     }
 }
 extension SignInCoordinator: PhoneSignInViewModuleOutput {
     func enterCodeView() {
+        let vc = CodeSignInConfigurator().configure(output: self)
+        router.push(vc, animated: true)
+    }
+}
+
+extension SignInCoordinator: CodeSignInModuleOutput {
+    
+    func onBack() {
+        router.popModule()
     }
 }

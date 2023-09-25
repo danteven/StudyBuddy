@@ -39,6 +39,7 @@ let target = Target(
     ],
     dependencies: [
         .project(target: "SignInCoordinator", path: "Modules/SignInCoordinator"),
+        .project(target: "Common", path: "Common"),
     ]
 )
 

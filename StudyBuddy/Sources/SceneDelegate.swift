@@ -15,14 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        window = UIWindow(frame: UIScreen.main.bounds)
-
-        window?.overrideUserInterfaceStyle = .light
-        window?.windowScene = windowScene
-
-        coordinator = MainCoordinator(window: window!)
+        coordinator = MainCoordinator(window: windowScene)
         coordinator?.startCoordinator()
-
         
     }
     

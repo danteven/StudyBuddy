@@ -115,7 +115,7 @@ open class StuddyBuddyTextField: UIView {
         set { textField[keyPath: keyPath] = newValue }
     }
     
-    func setView(image: UIImage, side: TextFieldImageSide, frameView: CGRect, frameContainer: CGRect) {
+    public func setView(image: UIImage, side: TextFieldImageSide, frameView: CGRect, frameContainer: CGRect) {
         textField.setUpImage(imageName: image, on: side, frameContainer: frameContainer, frameImage: frameView)
     }
 }
@@ -139,7 +139,7 @@ private extension StuddyBuddyTextField {
         textField.delegate = self
         
         line.setDemission(.height(1))
-        line.backgroundColor = SignInCoordinatorAsset.Colors.grey.color
+        line.backgroundColor = CommonAsset.Colors.grey.color
 
         errorLabel.font = UIFont.systemFont(ofSize: 15)
 //        errorLabel.textColor = BebsCommonAsset.Color.redMain.color

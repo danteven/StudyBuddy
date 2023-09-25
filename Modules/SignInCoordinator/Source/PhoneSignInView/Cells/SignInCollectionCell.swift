@@ -8,19 +8,33 @@
 
 import Foundation
 import UIKit
+import Combine
+import Common
 
 class SignInCollectionPhoneCell: UICollectionViewCell {
     
     enum Constants {
         static let description = "Мы отправим персональный 6-значный код для входа в личный кабинет"
         static let phone = "Номер телефона"
+        static let enter = "Войти"
     }
     
+    public var onActionPublisher: AnyPublisher<Void, Never> {
+        onActionSubject.eraseToAnyPublisher()
+    }
+    
+    private let onActionSubject = PassthroughSubject<Void, Never>()
+    
     private let descriptionLabel = UILabel()
+    
+    private let enterButton = SBButton(type: .filled(Constants.enter), image: CommonAsset.Buttons.arrow.image)
     
     private let subtitleLabel = UILabel()
     
     private let phoneTextfield = StuddyBuddyTextField()
+    
+    private var cancellableSet = Set<AnyCancellable>()
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +58,7 @@ private extension SignInCollectionPhoneCell {
        
         addSubview(descriptionLabel)
         descriptionLabel.pinToSuperView(sides: .left(16), .right(-16), .top(10))
-        descriptionLabel.textColor = SignInCoordinatorAsset.Colors.darkGrey.color
+        descriptionLabel.textColor = CommonAsset.Colors.darkGrey.color
         descriptionLabel.font = .systemFont(ofSize: 16)
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byWordWrapping
@@ -61,14 +75,24 @@ private extension SignInCollectionPhoneCell {
         subtitleLabel.text = Constants.phone
         
         addSubview(phoneTextfield)
-        phoneTextfield.pinToSuperView(sides: .left(16), .right(-16), .bottomR)
+        phoneTextfield.pinToSuperView(sides: .left(16), .right(-16))
         phoneTextfield.pin(side: .top(8), to: .bottom(subtitleLabel))
-        phoneTextfield.setView(image: SignInCoordinatorAsset.flag.image, side: .left, frameView: CGRect(x: 0, y: 0, width: 24, height: 30), frameContainer: CGRect(x: 0, y: 0, width: 32, height: 30))
+        phoneTextfield.setView(image: CommonAsset.flag.image, side: .left, frameView: CGRect(x: 0, y: 0, width: 24, height: 30), frameContainer: CGRect(x: 0, y: 0, width: 32, height: 30))
         phoneTextfield.placeholder = "+7 000 000-00-00"
+        
+        addSubview(enterButton)
+        enterButton.pinToSuperView(sides: .left(16), .right(-16), .bottomR)
+        enterButton.pin(side: .top(40), to: .bottom(phoneTextfield))
+        enterButton.setDemission(.height(47))
         
     }
     
     func bind() {
-        
+        enterButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { cell, _ in
+                cell.onActionSubject.send()
+            }
+            .store(in: &cancellableSet)
     }
 }
