@@ -64,9 +64,12 @@ open class StuddyBuddyTextField: UIView {
 
     // MARK: - Private properties
 
+    private let titleLabel = UILabel()
     private let line = UIView()
     private var errorLabel = UILabel()
     private let leftView = UIImageView()
+    
+    private let title: String?
 
     private var bottomConstraint: NSLayoutConstraint?
     
@@ -80,8 +83,9 @@ open class StuddyBuddyTextField: UIView {
     
     /// Init object
     /// - Parameter setStatePublisher: Publisher for set valid state
-    public init(setStatePublisher: AnyPublisher<TextFieldStateType, Never>? = nil) {
+    public init(setStatePublisher: AnyPublisher<TextFieldStateType, Never>? = nil, title: String? = nil) {
         self.setStatePublisher = setStatePublisher
+        self.title = title
         super.init(frame: .zero)
         setup()
         bind()
@@ -125,12 +129,15 @@ open class StuddyBuddyTextField: UIView {
 
 private extension StuddyBuddyTextField {
     func setup() {
-        let stackView = UIStackView(arrangedSubviews: [textField, line, errorLabel])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel,textField, line, errorLabel])
         addSubview(stackView)
         stackView.pinToSuperView()
         stackView.axis = .vertical
         stackView.distribution = .fillProportionally
         stackView.spacing = 10
+        
+        titleLabel.font = .systemFont(ofSize: 16)
+        titleLabel.text = title
         
         textField.textAlignment = .left
         textField.font = UIFont.systemFont(ofSize: 16)

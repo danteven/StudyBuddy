@@ -30,6 +30,16 @@ extension SignInCoordinator: PhoneSignInViewModuleOutput {
         let vc = CodeSignInConfigurator().configure(output: self)
         router.push(vc, animated: true)
     }
+    
+    func forgotPasswordView() {
+        let vc = PasswordChangeConfigurator().configure(output: self)
+        router.push(vc, animated: true)
+    }
+    
+    func registerStudent() {
+        let vc = RegistrationConfigurator().configure(output: self)
+        router.push(vc, animated: true)
+    }
 }
 
 extension SignInCoordinator: CodeSignInModuleOutput {
@@ -38,3 +48,24 @@ extension SignInCoordinator: CodeSignInModuleOutput {
         router.popModule()
     }
 }
+
+extension SignInCoordinator: PasswordChangeModuleOutput {
+    
+    func showInstruction() {
+        let vc = InstructionsConfigurator().configure(output: self)
+        router.present(vc)
+    }
+    
+    func back() {
+        router.popModule()
+    }
+}
+
+extension SignInCoordinator: InstructionsModuleOutput {
+    
+    func close() {
+        router.dismissModule()
+    }
+}
+
+extension SignInCoordinator: RegistrationModuleOutput { }

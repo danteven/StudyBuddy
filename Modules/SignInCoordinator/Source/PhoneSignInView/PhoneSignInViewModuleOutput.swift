@@ -10,6 +10,10 @@ protocol PhoneSignInViewModuleOutput {
 
     func enterCodeView()
     
+    func forgotPasswordView()
+    
+    func registerStudent()
+    
 }
 
 
