@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Common
 
 final class PhoneSignInViewViewModel {
     
@@ -30,8 +31,17 @@ final class PhoneSignInViewViewModel {
         bind()
     }
     
-    func enterCodeView() {
-        output.enterCodeView()
+    func buttonAction(type: SignInActionType) {
+        switch type {
+        case .back:
+            break
+        case .forgotPassword:
+            output.forgotPasswordView()
+        case .enter:
+            output.enterCodeView()
+        case .registerStudent:
+            output.registerStudent()
+        }
     }
 
 }

@@ -126,13 +126,19 @@ final class PhoneSignInViewViewController: UIViewController {
             switch model {
             case .email:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SignInCollectionEmailCell", for: indexPath) as! SignInCollectionEmailCell
+                cell.onActionPublisher
+                    .withUnretained(self)
+                    .sink { view, type in
+                        view.viewModel.buttonAction(type: type)
+                    }
+                    .store(in: &cancellableSet)
                 return cell
             case .phone:
                 let cell: SignInCollectionPhoneCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SignInCollectionPhoneCell", for: indexPath) as! SignInCollectionPhoneCell
                 cell.onActionPublisher
                     .withUnretained(self)
-                    .sink { view, _ in
-                        view.viewModel.enterCodeView()
+                    .sink { view, type in
+                        view.viewModel.buttonAction(type: type)
                     }
                     .store(in: &cancellableSet)
                 return cell
@@ -222,7 +228,14 @@ private extension PhoneSignInViewViewController {
         diffableDataSource.apply(snapshot)
     }
 
-    func bind() { }
+    func bind() {
+        registerStudentButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { view, _ in
+                view.viewModel.buttonAction(type: .registerStudent)
+            }
+            .store(in: &cancellableSet)
+    }
 
 }
 

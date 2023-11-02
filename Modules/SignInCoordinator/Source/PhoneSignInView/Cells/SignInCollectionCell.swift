@@ -19,19 +19,17 @@ class SignInCollectionPhoneCell: UICollectionViewCell {
         static let enter = "Войти"
     }
     
-    public var onActionPublisher: AnyPublisher<Void, Never> {
+    public var onActionPublisher: AnyPublisher<SignInActionType, Never> {
         onActionSubject.eraseToAnyPublisher()
     }
     
-    private let onActionSubject = PassthroughSubject<Void, Never>()
+    private let onActionSubject = PassthroughSubject<SignInActionType, Never>()
     
     private let descriptionLabel = UILabel()
     
     private let enterButton = SBButton(type: .filled(Constants.enter), image: CommonAsset.Buttons.arrow.image)
-    
-    private let subtitleLabel = UILabel()
-    
-    private let phoneTextfield = StuddyBuddyTextField()
+        
+    private let phoneTextfield = StuddyBuddyTextField(title: Constants.phone)
     
     private var cancellableSet = Set<AnyCancellable>()
 
@@ -67,16 +65,10 @@ private extension SignInCollectionPhoneCell {
         paragraph.lineSpacing = 4
         attString.addAttribute(.paragraphStyle, value: paragraph, range: NSMakeRange(0, attString.length))
         descriptionLabel.attributedText = attString
-        
-        addSubview(subtitleLabel)
-        subtitleLabel.pinToSuperView(sides: .left(16))
-        subtitleLabel.pin(side: .top(20), to: .bottom(descriptionLabel))
-        subtitleLabel.font = .systemFont(ofSize: 16)
-        subtitleLabel.text = Constants.phone
-        
+                
         addSubview(phoneTextfield)
         phoneTextfield.pinToSuperView(sides: .left(16), .right(-16))
-        phoneTextfield.pin(side: .top(8), to: .bottom(subtitleLabel))
+        phoneTextfield.pin(side: .top(20), to: .bottom(descriptionLabel))
         phoneTextfield.setView(image: CommonAsset.flag.image, side: .left, frameView: CGRect(x: 0, y: 0, width: 24, height: 30), frameContainer: CGRect(x: 0, y: 0, width: 32, height: 30))
         phoneTextfield.placeholder = "+7 000 000-00-00"
         
@@ -91,7 +83,7 @@ private extension SignInCollectionPhoneCell {
         enterButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { cell, _ in
-                cell.onActionSubject.send()
+                cell.onActionSubject.send(.enter)
             }
             .store(in: &cancellableSet)
     }

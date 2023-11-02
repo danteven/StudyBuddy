@@ -13,7 +13,7 @@ public class SBButton: UIButton {
         
     private let type: SBButtonType
     
-    public init(type: SBButtonType, image: UIImage) {
+    public init(type: SBButtonType, image: UIImage? = nil) {
         self.type = type
         super.init(frame: .zero)
         setup(image: image)
@@ -25,7 +25,7 @@ public class SBButton: UIButton {
 }
 
 private extension SBButton {
-    func setup(image: UIImage) {
+    func setup(image: UIImage?) {
         if #available(iOS 15, *) {
             var filled = type.config
             var container = AttributeContainer()

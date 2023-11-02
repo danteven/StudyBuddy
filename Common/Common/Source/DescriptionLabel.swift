@@ -30,7 +30,11 @@ public class DescriptionLabel: UIView {
     
     public func configure(type: DescriptionType) {
         titleLabel.text = type.title
+        titleLabel.font = type.titleFont
+        subtitleLabel.font = type.subtitleFont
         subtitleLabel.textColor = type.subtitleColor
+        titleLabel.textAlignment = type.alignment ?? .center
+        subtitleLabel.textAlignment = type.alignment ?? .center
         let attString = NSMutableAttributedString(string: type.subtitle)
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = 4
@@ -44,14 +48,14 @@ private extension DescriptionLabel {
     func setup() {
         
         addSubview(titleLabel)
-        titleLabel.pinToSuperView(sides: .leftR, .topR)
+        titleLabel.pinToSuperView(sides: .leftR, .topR, .rightR)
+        titleLabel.numberOfLines = 0
+        titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.textColor = .black
-        titleLabel.font = .boldSystemFont(ofSize: 32)
 
         addSubview(subtitleLabel)
         subtitleLabel.pinToSuperView(sides: .leftR, .rightR, .bottomR)
         subtitleLabel.pin(side: .top(spacing), to: .bottom(titleLabel))
-        subtitleLabel.font = .systemFont(ofSize: 16)
         subtitleLabel.numberOfLines = 0
         subtitleLabel.lineBreakMode = .byWordWrapping
         
