@@ -36,7 +36,10 @@ class MainCoordinator: BaseCoordinator {
     }
 
     func startSignInFlow() {
-        let coordinator = SignInCoordinator(router: router)
+        let coordinator = SignInCoordinator(
+            router: router,
+            output: self
+        )
         let navigationControoler = UINavigationController()
         router.setRootModule(navigationControoler)
         coordinator.startCoordinator()
@@ -47,6 +50,16 @@ class MainCoordinator: BaseCoordinator {
 extension MainCoordinator {
     func bind() {
         
+    }
+}
+
+extension MainCoordinator: SignInCoordinatorOutput {
+    func endLogin(is newUser: Bool, type: RegistrationType) {
+        if newUser {
+            
+        } else {
+            
+        }
     }
 }
     

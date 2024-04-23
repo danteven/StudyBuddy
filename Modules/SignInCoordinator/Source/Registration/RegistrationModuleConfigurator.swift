@@ -7,14 +7,21 @@
 //
 
 import UIKit
+import Common
 
 final class RegistrationConfigurator {
 
     // MARK: - Internal methods
 
-    func configure(output: RegistrationModuleOutput) -> UIViewController {
+    func configure(
+        type: RegistrationType,
+        output: RegistrationModuleOutput
+    ) -> UIViewController {
 
-        let viewModel = RegistrationViewModel(output: output)
+        let viewModel = RegistrationViewModel(
+            type: type,
+            output: output
+        )
 
         let view = RegistrationViewController(viewModel: viewModel)
 

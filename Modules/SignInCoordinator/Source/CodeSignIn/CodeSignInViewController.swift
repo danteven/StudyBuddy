@@ -112,6 +112,13 @@ private extension CodeSignInViewController {
                 view.viewModel.back()
             }
             .store(in: &cancellableSet)
+        
+        nextButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { view, _ in
+                view.viewModel.back()
+            }
+            .store(in: &cancellableSet)
     }
 
 }

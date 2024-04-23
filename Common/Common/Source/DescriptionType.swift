@@ -13,7 +13,8 @@ public enum DescriptionType {
     case codeSignIn
     case forgotPassword
     case codeEmail
-    case registration
+    case registrationStudent
+    case registrationTutor
     
     public var title: String {
         switch self {
@@ -23,8 +24,10 @@ public enum DescriptionType {
             return "Забыли пароль?"
         case .codeEmail:
             return "Мы отправили письмо с инструкциями"
-        case .registration:
+        case .registrationStudent:
             return "Регистрация ученика"
+        case .registrationTutor:
+            return "Регистрация репетитора"
         }
     }
     
@@ -36,8 +39,10 @@ public enum DescriptionType {
             return "Для восстановления пароля введите адрес эл.почты, на который вы регистрировались. Мы отправим письмо для воссталовления пароля"
         case .codeEmail:
             return "Если вы не получили письмо с инструкциями, проверьте, пожалуйста, папку «Спам» или попробуйте отправить запрос ещё раз"
-        case .registration:
+        case .registrationStudent:
             return "Репетиторы не будут видеть ваши контакты, они нужны только для регистрации"
+        case .registrationTutor:
+            return "Никто не будет видеть твои контакты, они нужны только для регистрации"
         }
     }
     
@@ -45,24 +50,24 @@ public enum DescriptionType {
         switch self {
         case .codeSignIn, .codeEmail:
             return .black
-        case .forgotPassword, .registration:
+        default:
             return CommonAsset.Colors.darkGrey.color
         }
     }
     
     public var spacing: CGFloat {
         switch self {
-        case .codeSignIn, .forgotPassword, .codeEmail, .registration:
+        default:
             return 10
         }
     }
     
     public var titleFont: UIFont {
         switch self {
-        case .codeSignIn, .forgotPassword, .registration:
-            return .boldSystemFont(ofSize: 32)
         case .codeEmail:
             return .boldSystemFont(ofSize: 27)
+        default:
+            return .boldSystemFont(ofSize: 32)
         }
     }
     
@@ -75,10 +80,10 @@ public enum DescriptionType {
     
     public var alignment: NSTextAlignment {
         switch self {
-        case .codeSignIn, .forgotPassword, .registration:
-            return .left
         case .codeEmail:
             return .center
+        default:
+            return .left
         }
     }
 }

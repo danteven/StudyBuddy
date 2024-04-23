@@ -7,14 +7,23 @@
 //
 
 import UIKit
+import Common
 
 final class CodeSignInConfigurator {
 
     // MARK: - Internal methods
 
-    func configure(output: CodeSignInModuleOutput) -> UIViewController {
+    func configure(
+        name: String? = nil,
+        type: RegistrationType? = nil,
+        output: CodeSignInModuleOutput
+    ) -> UIViewController {
 
-        let viewModel = CodeSignInViewModel(output: output)
+        let viewModel = CodeSignInViewModel(
+            name: name,
+            type: type,
+            output: output
+        )
 
         let view = CodeSignInViewController(viewModel: viewModel)
 
