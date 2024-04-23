@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Common
+import Combine
 
 public class SubjectsCell: UICollectionViewCell {
     
@@ -16,16 +17,47 @@ public class SubjectsCell: UICollectionViewCell {
         static let placeholder = "Введите название предмета"
     }
     
+    enum Section: Hashable {
+        case subjects
+        case textField
+    }
+    
+    enum Items: Hashable {
+        case subject([String])
+        case chooseSubject([String]?)
+        
+        public static func == (lhs: Items, rhs: Items) -> Bool {
+            lhs.hashValue == rhs.hashValue
+        }
+    }
+    
+    var changeInModelPublisher: CustomPublisher<SubjectsCellAction> {
+        changeInModelSubject.eraseToAnyPublisher()
+    }
+    
+    lazy var mainCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout(needHeader: false))
+    
+    var viewModel: SubjectsCellViewModel?
+    
+    let containerView = UIView()
+    
+    var topContraint: NSLayoutConstraint?
+    
+    var heightConstraint: NSLayoutConstraint?
+    
     
     // MARK: - Private properties
+
     
     private let textField = StuddyBuddyTextField()
     
-    private var topContraint: NSLayoutConstraint?
+    private let changeInModelSubject = CustomSubject<SubjectsCellAction>()
+        
+    private lazy var diffableDataSource = configureDataSource()
+        
+    private var cancellable = [String: AnyCancellable]()
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout(needHeader: false))
-    
-    private lazy var subjectsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createFlowLayout())
+    private var cancellableSet = Set<AnyCancellable>()
     
     // MARK: - Init
     
@@ -41,7 +73,23 @@ public class SubjectsCell: UICollectionViewCell {
     
     // MARK: - Methods
     
-    public func configure() {
+    public func setupConstraints() {
+        mainCollectionView.pinToSuperView(sides: .leftR, .rightR, .bottomR)
+        topContraint = mainCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor)
+        topContraint?.isActive = true
+    }
+    
+    func configure(viewModel: SubjectsCellViewModel) {
+        self.viewModel = viewModel
+        
+        initialSnapshot()
+    }
+    
+    func initialSnapshot() {
+        var snapshot = diffableDataSource.snapshot()
+        snapshot.appendSections([.subjects, .textField])
+        snapshot.appendItems([.chooseSubject(viewModel?.model)], toSection: .textField)
+        diffableDataSource.apply(snapshot)
     }
 }
 
@@ -49,26 +97,113 @@ public class SubjectsCell: UICollectionViewCell {
 
 private extension SubjectsCell {
     func setup() {
-        contentView.addSubview(textField)
-        textField.pinToSuperView(sides: .left(16), .right(-16))
-        textField.placeholder = Constants.placeholder
+        heightConstraint = mainCollectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: 500)
+        heightConstraint?.isActive = true
         
-        contentView.addSubview(collectionView)
-        collectionView.pinToSuperView(sides: .topR, .left(16), .right(-16))
-        collectionView.pin(side: .bottom(-20), to: .top(textField))
-        collectionView.register(SBCollectionCell.self)
-        
-        contentView.addSubview(subjectsCollectionView)
-        subjectsCollectionView.pinToSuperView(sides: .left(16), .right(-16), .bottomR)
-        subjectsCollectionView.pin(side: .topR, to: .bottom(textField))
-        subjectsCollectionView.isHidden = true
-        subjectsCollectionView.dataSource = self
-        subjectsCollectionView.register(<#T##cellType: T.Type##T.Type#>)
-                
+        contentView.addSubview(mainCollectionView)
+        setupConstraints()
+        mainCollectionView.register(PurpleSubjectCell.self)
+        mainCollectionView.register(ChooseSubjectCell.self)
+        mainCollectionView.dataSource = self.diffableDataSource
+        mainCollectionView.showsVerticalScrollIndicator = false
+        mainCollectionView.isScrollEnabled = false
     }
     
     func bind() {
-        
+       
+    }
+    
+    func configureDataSource() -> UICollectionViewDiffableDataSource<Section, Items> {
+            let dataSource = UICollectionViewDiffableDataSource<Section, Items>(collectionView: mainCollectionView) { [weak self] (collectionView, indexPath, model) in
+                guard let self else { return UICollectionViewCell() }
+                switch model {
+                case let .subject(model):
+                    let cell: PurpleSubjectCell = collectionView.dequeue(for: indexPath)
+                    cell.configure(model: model)
+                    cancellable[cell.id] = cell.deletePublisher
+                        .withUnretained(self)
+                        .sink { cell, id in
+                            cell.deleteInSnapshot(id: id)
+                            cell.changeInModelSubject.send(.delete(id))
+                        }
+                    return cell
+                case let .chooseSubject(model):
+                    let cell: ChooseSubjectCell = collectionView.dequeue(for: indexPath)
+                    cell.configure(model: model ?? [])
+                    cell.cellActionPublisher
+                        .withUnretained(self)
+                        .sink { view, type in
+                            view.cellAction(type: type)
+                        }
+                        .store(in: &cancellableSet)
+                    return cell
+                }
+            }
+            return dataSource
+    }
+    
+    func cellAction(type: CellActions) {
+        switch type {
+        case let .choose(string):
+            addToSnapshot(model: string)
+            changeInModelSubject.send(.add(string))
+        case let .updateConstraints(bool):
+            if bool {
+                UIView.animate(withDuration: 0.3) {
+//                    self.heightConstraint?.constant = 350
+//                    self.layoutIfNeeded()
+                }
+            }
+        }
+    }
+    
+    func deleteInSnapshot(id: String) {
+        guard let viewModel else { return }
+        var snapshot = diffableDataSource.snapshot()
+        guard viewModel.addedItems.count != 1 else {
+            viewModel.addedItems.removeAll()
+            snapshot.deleteSections([.subjects, .textField])
+            snapshot.appendSections([.textField])
+            snapshot.appendItems([.chooseSubject(viewModel.model)], toSection: .textField)
+            diffableDataSource.apply(snapshot)
+            return
+        }
+        snapshot.deleteSections([.textField])
+        snapshot.deleteItems([.subject(viewModel.addedItems.compactMap{ $0 })])
+        viewModel.addedItems.remove(id)
+        let newList = viewModel.model.compactMap { sub in
+            if !viewModel.addedItems.contains(sub) {
+                return sub
+            } else {
+                return nil
+            }
+        }
+        snapshot.appendSections([.textField])
+        snapshot.appendItems([.subject(viewModel.addedItems.compactMap{ $0 })], toSection: .subjects)
+        snapshot.appendItems([.chooseSubject(newList)], toSection: .textField)
+        diffableDataSource.apply(snapshot)
+    }
+    
+    func addToSnapshot(model: String) {
+        guard let viewModel else { return }
+        var snapshot = diffableDataSource.snapshot()
+        snapshot.deleteSections([.subjects, .textField])
+        viewModel.addedItems.insert(model)
+        let newList = viewModel.model.compactMap { sub in
+            if !viewModel.addedItems.contains(sub) {
+                return sub
+            } else {
+                return nil
+            }
+        }
+        snapshot.appendSections([.subjects, .textField])
+        snapshot.appendItems([.subject(viewModel.addedItems.compactMap{ $0 })], toSection: .subjects)
+        snapshot.appendItems([.chooseSubject(newList)], toSection: .textField)
+        if #available(iOS 15.0, *) {
+            diffableDataSource.applySnapshotUsingReloadData(snapshot)
+        } else {
+            diffableDataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
     
     func createLayout(pinHeader: Bool? = nil, needHeader: Bool) -> UICollectionViewLayout {
@@ -78,16 +213,9 @@ private extension SubjectsCell {
         return UICollectionViewCompositionalLayout(
             sectionProvider: { [weak self] (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
                 guard let self else { return nil }
-                let widthDimension = NSCollectionLayoutDimension.estimated(1.0)
-                let itemSize = NSCollectionLayoutSize(widthDimension: widthDimension, heightDimension: .absolute(56))
+                let widthDimension = NSCollectionLayoutDimension.fractionalWidth(1.0)
+                let itemSize = NSCollectionLayoutSize(widthDimension: widthDimension, heightDimension: .estimated(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 3, bottom: 0, trailing: 3)
-                item.edgeSpacing = NSCollectionLayoutEdgeSpacing(
-                    leading: .fixed(0),
-                    top: .fixed(16),
-                    trailing: .fixed(0),
-                    bottom: .fixed(16)
-                )
                                 
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1.0)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
@@ -95,7 +223,8 @@ private extension SubjectsCell {
                 if needHeader {
                     let headerFooterSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1.0))
                     let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerFooterSize, elementKind: "SBCollectionHeader-kind", alignment: .top)
-                    if pinHeader {
+                    if let pinHeader,
+                    pinHeader {
                         header.pinToVisibleBounds = false
                     }
                     section.boundarySupplementaryItems = [header]
@@ -107,7 +236,7 @@ private extension SubjectsCell {
         )
     }
     
-    func createFlowLayout() -> UICollectionViewLayout {
+    func createFlowLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: frame.size.width, height: 30)
         layout.minimumLineSpacing = 0
@@ -116,3 +245,5 @@ private extension SubjectsCell {
     }
     
 }
+
+

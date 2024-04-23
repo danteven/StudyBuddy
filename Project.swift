@@ -40,7 +40,8 @@ let target = Target(
     dependencies: [
         .project(target: "SignInCoordinator", path: "Modules/SignInCoordinator"),
         .project(target: "Common", path: "Common"),
-        .project(target: "TutorWorkSheetCoordinator", path: "Modules/TutorWorkSheetCoordinator")
+        .project(target: "TutorWorkSheetCoordinator", path: "Modules/TutorWorkSheetCoordinator"),
+        .project(target: "TutorRegistrationModule", path: "Modules/TutorRegistrationModule")
     ]
 )
 

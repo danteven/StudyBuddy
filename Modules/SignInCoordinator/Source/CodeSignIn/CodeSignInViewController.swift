@@ -109,14 +109,14 @@ private extension CodeSignInViewController {
         leftButton.onActionPublisher
             .withUnretained(self)
             .sink { view, _ in
-                view.viewModel.back()
+                view.viewModel.buttonAction(type: .back)
             }
             .store(in: &cancellableSet)
         
         nextButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { view, _ in
-                view.viewModel.back()
+                view.viewModel.buttonAction(type: .next)
             }
             .store(in: &cancellableSet)
     }

@@ -7,3 +7,12 @@
 //
 
 import Foundation
+public struct RegistrationCellModel {
+    public var type: RegistrationContainer
+    
+    public init(
+        type: RegistrationContainer
+    ) {
+        self.type = type
+    }
+}

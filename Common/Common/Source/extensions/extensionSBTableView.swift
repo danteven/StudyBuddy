@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+public extension String {
+    static var tableHeaderKind: String {
+        return "SBTableHeader-kind"
+    }
+}

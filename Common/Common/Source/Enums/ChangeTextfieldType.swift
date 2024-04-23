@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+public enum ChangeTextfieldType {
+    case previous
+    case next
+}
+

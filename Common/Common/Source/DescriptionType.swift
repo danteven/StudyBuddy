@@ -15,6 +15,10 @@ public enum DescriptionType {
     case codeEmail
     case registrationStudent
     case registrationTutor
+    case purpleViewData(String)
+    case personalData
+    case contacts
+    case specialization
     
     public var title: String {
         switch self {
@@ -28,6 +32,14 @@ public enum DescriptionType {
             return "Регистрация ученика"
         case .registrationTutor:
             return "Регистрация репетитора"
+        case let .purpleViewData(name):
+            return "\(name), добро пожаловать в StudyBuddy!"
+        case .personalData:
+            return "Личные данные"
+        case .contacts:
+            return "Контакты"
+        case .specialization:
+            return "По каким целям готовите учеников?"
         }
     }
     
@@ -43,6 +55,14 @@ public enum DescriptionType {
             return "Репетиторы не будут видеть ваши контакты, они нужны только для регистрации"
         case .registrationTutor:
             return "Никто не будет видеть твои контакты, они нужны только для регистрации"
+        case .purpleViewData:
+            return "Для продолжения регистрации \nзаполните небольшую анкету"
+        case .personalData:
+            return "Эта информация нужна для регистрации и проверки анкеты"
+        case .contacts:
+            return "Никто не будет видеть ваши контакты, нужны для регистрации и для входа в личный кабинет"
+        case .specialization:
+            return "Расскажите с каким целями вы можете помочь наиболее эффективно, чтобы у вас было больше учеников , которым нужен репетитор именно с таким опытом"
         }
     }
     

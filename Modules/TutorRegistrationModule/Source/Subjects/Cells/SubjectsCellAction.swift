@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+enum SubjectsCellAction {
+    case delete(String)
+    case add(String)
+}

@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+enum ContactsTextFieldTypes: Int, CaseIterable {
+    case phone
+    case email
+}

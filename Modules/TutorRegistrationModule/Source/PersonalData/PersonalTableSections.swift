@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+enum PersonalTableSections: CaseIterable {
+    case purpleView
+    case personalData
+    case contacts
+}

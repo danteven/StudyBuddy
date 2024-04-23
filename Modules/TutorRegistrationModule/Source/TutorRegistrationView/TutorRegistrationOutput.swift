@@ -7,3 +7,6 @@
 //
 
 import Foundation
+protocol TutorRegistrationOutput {
+    func onCloseNavigation()
+}

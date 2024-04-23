@@ -7,3 +7,7 @@
 //
 
 import Foundation
+
+public protocol TutorRegistrationModuleInput {
+    func changeState(is valid: RegistrationButtonState, type: RegistrationContainer)
+}

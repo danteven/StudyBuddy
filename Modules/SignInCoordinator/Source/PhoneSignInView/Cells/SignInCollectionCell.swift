@@ -27,7 +27,7 @@ class SignInCollectionPhoneCell: UICollectionViewCell {
     
     private let descriptionLabel = UILabel()
     
-    private let enterButton = SBButton(type: .filled(Constants.enter), image: CommonAsset.Buttons.arrow.image)
+    private let enterButton = SBButton(type: .filled(Constants.enter))
         
     private let phoneTextfield = StuddyBuddyTextField(title: Constants.phone)
     

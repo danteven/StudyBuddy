@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+public enum CellActions {
+    case choose(String)
+    case updateConstraints(Bool)
+}

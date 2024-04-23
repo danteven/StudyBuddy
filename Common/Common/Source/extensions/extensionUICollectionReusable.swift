@@ -6,4 +6,10 @@
 //  Copyright © 2024 StuddyBuddy. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+public extension UICollectionReusableView {
+    static var reuseIdentifier: String {
+        return String(describing: Self.self)
+    }
+}

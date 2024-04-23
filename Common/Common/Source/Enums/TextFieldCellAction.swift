@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+public enum TextfieldCellAction {
+    case updateText(String)
+    case updateState(TextFieldStateType)
+    case becomeFirstResponder
+    case resignFirstResponder
+}

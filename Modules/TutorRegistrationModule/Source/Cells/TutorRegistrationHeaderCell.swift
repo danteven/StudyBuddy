@@ -20,17 +20,21 @@ public class TutorRegistrationHeaderCell: UICollectionViewCell {
         
     public override var isSelected: Bool {
         didSet {
-            circleView.tintColor = isSelected ?
-            CommonAsset.Colors.mainPurple.color :
-            CommonAsset.Colors.darkGrey.color
+            circleView.layer.borderColor = isSelected ?
+            CommonAsset.Colors.mainPurple.color.cgColor :
+            CommonAsset.Colors.grey.color.cgColor
             
             circleLabel.textColor = isSelected ?
             CommonAsset.Colors.mainPurple.color :
-                .black
+            CommonAsset.Colors.grey.color
+            
+            mainLabel.textColor = isSelected ?
+            CommonAsset.Colors.mainPurple.color :
+            CommonAsset.Colors.grey.color
         }
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
         bind()
@@ -40,8 +44,16 @@ public class TutorRegistrationHeaderCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure()
-    
+    func configure(model: [String: String], done: Bool? = nil) {
+        circleLabel.text = model.keys.first
+        mainLabel.text = model.values.first
+        guard let done,
+              done == true else { return }
+        mainLabel.textColor = .black
+        circleView.backgroundColor = .black
+        circleLabel.textColor = .black
+        
+    }
 }
 
 private extension TutorRegistrationHeaderCell {
@@ -49,20 +61,21 @@ private extension TutorRegistrationHeaderCell {
     func setup() {
         addSubview(circleView)
         circleView.pinToSuperView(sides: .topR, .leftR, .bottomR)
-        circleView.layer.cornerRadius = 15
-        circleView.setDemission(.height(30))
-        circleView.tintColor = CommonAsset.Colors.darkGrey.color
+        circleView.layer.cornerRadius = 20
+        circleView.setEqualSize(constant: 30)
+        circleView.layer.borderColor = CommonAsset.Colors.grey.color.cgColor
+        circleView.layer.borderWidth = 2
         
         circleView.addSubview(circleLabel)
         circleLabel.pinToSuperView(sides: .centerXR, .centerYR)
-        circleLabel.textColor = .black
-        circleLabel.font = .systemFont(ofSize: 13)
+        circleLabel.textColor = CommonAsset.Colors.grey.color
+        circleLabel.font = .systemFont(ofSize: 20)
         
         addSubview(mainLabel)
         mainLabel.pinToSuperView(sides: .centerYR, .rightR)
-        mainLabel.pin(side: .left(8), to: .right(circleLabel))
-        mainLabel.textColor = .black
-        mainLabel.font = .systemFont(ofSize: 13)
+        mainLabel.pin(side: .left(8), to: .right(circleView))
+        mainLabel.textColor = CommonAsset.Colors.grey.color
+        mainLabel.font = .systemFont(ofSize: 20)
         
     }
     

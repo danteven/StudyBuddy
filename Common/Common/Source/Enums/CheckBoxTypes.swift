@@ -7,3 +7,20 @@
 //
 
 import Foundation
+
+public enum CheckBoxTypes: CaseIterable {
+    case pupil
+    case student
+    case adult
+    
+    public var title: String {
+        switch self {
+        case .pupil:
+            return "Школьники"
+        case .student:
+            return "Студенты"
+        case .adult:
+            return "Взрослые"
+        }
+    }
+}

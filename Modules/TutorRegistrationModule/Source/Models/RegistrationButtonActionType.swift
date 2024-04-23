@@ -7,3 +7,8 @@
 //
 
 import Foundation
+
+enum RegistrationButtonActionType {
+    case back
+    case next
+}

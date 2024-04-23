@@ -7,3 +7,30 @@
 //
 
 import Foundation
+import UIKit
+import Common
+
+public class TutorRegistrationCoordinator: BaseCoordinator {
+    
+    private let output: TutorRegistrationCoordinatorOutput
+    private let router: Router
+    
+    public init(
+        router: Router,
+        output: TutorRegistrationCoordinatorOutput
+    ) {
+        self.router = router
+        self.output = output
+    }
+    
+    public func startCoordinator() {
+        let vc = TutorRegistrationConfigurator().configure(output: self)
+        router.push(vc)
+    }
+}
+
+extension TutorRegistrationCoordinator: TutorRegistrationOutput { 
+    func onCloseNavigation() {
+        router.popModule()
+    }
+}
