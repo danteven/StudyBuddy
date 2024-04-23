@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Common
 import SignInCoordinator
+import TutorRegistrationModule
 
 class MainCoordinator: BaseCoordinator {
     
@@ -36,9 +37,21 @@ class MainCoordinator: BaseCoordinator {
     }
 
     func startSignInFlow() {
-        let coordinator = SignInCoordinator(router: router)
+        let coordinator = SignInCoordinator(
+            router: router,
+            output: self
+        )
         let navigationControoler = UINavigationController()
         router.setRootModule(navigationControoler)
+        coordinator.startCoordinator()
+        addDependency(coordinator)
+    }
+    
+    func startTutorRegistrationFlow() {
+        let coordinator = TutorRegistrationCoordinator(
+            router: router,
+            output: self
+        )
         coordinator.startCoordinator()
         addDependency(coordinator)
     }
@@ -48,5 +61,19 @@ extension MainCoordinator {
     func bind() {
         
     }
+}
+
+extension MainCoordinator: SignInCoordinatorOutput {
+    func endLogin(is newUser: Bool, type: RegistrationType) {
+        if newUser {
+            startTutorRegistrationFlow()
+        } else {
+            
+        }
+    }
+}
+
+extension MainCoordinator: TutorRegistrationCoordinatorOutput {
+    
 }
     

@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import Common
 
 public enum SignInActionType {
     case back
     case forgotPassword
     case enter
-    case registerStudent
+    case registration(RegistrationType)
 }

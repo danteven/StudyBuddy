@@ -29,7 +29,7 @@ let target = Target(
     name: "StudyBuddy",
     platform: .iOS,
     product: .app,
-    bundleId: "io.tuist.StudyBuddy",
+    bundleId: "StudyBuddy",
     deploymentTarget: .iOS(targetVersion: "13.0", devices: .iphone),
     infoPlist: "Info.plist",
     sources: ["StudyBuddy/**"],
@@ -40,6 +40,8 @@ let target = Target(
     dependencies: [
         .project(target: "SignInCoordinator", path: "Modules/SignInCoordinator"),
         .project(target: "Common", path: "Common"),
+        .project(target: "TutorWorkSheetCoordinator", path: "Modules/TutorWorkSheetCoordinator"),
+        .project(target: "TutorRegistrationModule", path: "Modules/TutorRegistrationModule")
     ]
 )
 

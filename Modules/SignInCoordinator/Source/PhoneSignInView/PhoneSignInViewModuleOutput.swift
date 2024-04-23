@@ -6,13 +6,15 @@
 //  Copyright © 2023 StudyBuddy. All rights reserved.
 //
 
+import Common
+
 protocol PhoneSignInViewModuleOutput {
 
     func enterCodeView()
     
     func forgotPasswordView()
     
-    func registerStudent()
+    func registration(type: RegistrationType)
     
 }
 

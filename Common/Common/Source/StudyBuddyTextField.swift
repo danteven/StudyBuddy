@@ -60,6 +60,11 @@ open class StuddyBuddyTextField: UIView {
         onReturnTextFiledSubject.eraseToAnyPublisher()
     }
     
+    /// Notify when arrows on toolbar pressed
+    public var onChangeTextfieldPublisher: CustomPublisher<ChangeTextfieldType> {
+        onChangeTextfieldSubject.eraseToAnyPublisher()
+    }
+    
     private let setStatePublisher: AnyPublisher<TextFieldStateType, Never>?
 
     // MARK: - Private properties
@@ -75,6 +80,8 @@ open class StuddyBuddyTextField: UIView {
     
     private let onReturnTextFiledSubject = PassthroughSubject<Void, Never>()
     private let onChangeTextSubject = CurrentValueSubject<String?, Never>(nil)
+    private let onChangeTextfieldSubject = PassthroughSubject<ChangeTextfieldType, Never>()
+
 
     private var cancellableSet = Set<AnyCancellable>()
 

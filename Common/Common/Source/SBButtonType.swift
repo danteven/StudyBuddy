@@ -12,13 +12,16 @@ import UIKit
 public enum SBButtonType {
     case border(String)
     case filled(String)
+    case withoutText
     
-    public var title: String {
+    public var title: String? {
         switch self {
         case .border(let string):
             return string
         case .filled(let string):
             return string
+        case .withoutText:
+            return nil
         }
     }
     
@@ -28,6 +31,8 @@ public enum SBButtonType {
         case .border(_):
             return .bordered()
         case .filled(_):
+            return .filled()
+        case .withoutText:
             return .filled()
         }
     }

@@ -28,10 +28,7 @@ class SignInCollectionEmailCell: UICollectionViewCell {
     
     private let onActionSubject = PassthroughSubject<SignInActionType, Never>()
             
-    private let enterButton = SBButton(
-        type: .filled(Constants.enter),
-        image: CommonAsset.Buttons.arrow.image
-    )
+    private let enterButton = SBButton(type: .filled(Constants.enter))
         
     private let emailTextfield = StuddyBuddyTextField(title: Constants.email)
     

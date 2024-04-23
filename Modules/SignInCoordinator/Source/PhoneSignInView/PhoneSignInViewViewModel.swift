@@ -39,8 +39,8 @@ final class PhoneSignInViewViewModel {
             output.forgotPasswordView()
         case .enter:
             output.enterCodeView()
-        case .registerStudent:
-            output.registerStudent()
+        case let .registration(type):
+            output.registration(type: type)
         }
     }
 

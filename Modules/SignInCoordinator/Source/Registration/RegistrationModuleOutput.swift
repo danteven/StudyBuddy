@@ -6,8 +6,13 @@
 //  Copyright © 2023 StudyBuddy. All rights reserved.
 //
 
+import Common
+
 protocol RegistrationModuleOutput {
 
+    func back()
+    
+    func enterCode(type: RegistrationType, name: String?)
 }
 
 

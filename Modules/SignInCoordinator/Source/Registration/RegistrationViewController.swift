@@ -22,6 +22,7 @@ final class RegistrationViewController: UIViewController {
         static let checkLabel = "Нажимая «Опубликовать», вы соглашаетесь на обработку персональных данных и условия сервиса"
         static let enterLabel = "Уже есть аккаунт?"
         static let enterButton = "Войти"
+        static let offert = "Соглашаюсь с офертой"
     }
 
     // MARK: - Private Properties
@@ -42,11 +43,15 @@ final class RegistrationViewController: UIViewController {
     
     private let registrationButton = SBButton(type: .filled(Constants.registrationButton))
     
-    private let checkBox = CheckBox()
+    private let firstCheckBox = CheckBox()
+    
+    private let secondCheckBox = CheckBox()
     
     private let enterButton = UIButton()
     
-    private let checkLabel = UILabel()
+    private let firstCheckLabel = UILabel()
+    
+    private let secondCheckLabel = UILabel()
 
     private let viewModel: RegistrationViewModel
 
@@ -85,7 +90,7 @@ private extension RegistrationViewController {
         view.addSubview(descriptionLabel)
         descriptionLabel.pinToSuperView(sides: .left(16), .right(-16))
         descriptionLabel.pin(side: .top(40), to: .bottom(headerView))
-        descriptionLabel.configure(type: .registration)
+        descriptionLabel.configure(type: viewModel.type == .student ? .registrationStudent : .registrationTutor)
         
         view.addSubview(nameTextField)
         nameTextField.pinToSuperView(sides: .left(16), .right(-16))
@@ -107,28 +112,6 @@ private extension RegistrationViewController {
         registrationButton.pinToSuperView(sides: .left(16), .right(-16))
         registrationButton.pin(side: .top(20), to: .bottom(emailTextField))
         registrationButton.setDemission(.height(47))
-        
-        checkLabel.lineBreakMode = .byWordWrapping
-        checkLabel.numberOfLines = 0
-        let attrString = NSMutableAttributedString(string: Constants.checkLabel)
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = 6
-        attrString.addAttribute(.paragraphStyle, value: style, range: NSRange(location: 0, length: Constants.checkLabel.count))
-        attrString.addAttribute(.foregroundColor, value: CommonAsset.Colors.darkGrey.color, range: NSRange(location: 0, length: 74))
-        attrString.addAttribute(.foregroundColor, value: CommonAsset.Colors.mainPurple.color, range: NSRange(location: 75, length: 15))
-//        attrString.addAttributes([
-//            .strokeColor: CommonAsset.Colors.mainPurple.color
-//        ], range: NSRange(location: 71, length: Constants.checkLabel.count))
-        checkLabel.attributedText = attrString
-        
-        let stackView = UIStackView(arrangedSubviews: [checkBox, checkLabel])
-        stackView.axis = .horizontal
-        stackView.distribution = .fill
-        stackView.spacing = 10
-        stackView.alignment = .leading
-        view.addSubview(stackView)
-        stackView.pinToSuperView(sides: .left(16), .right(-16))
-        stackView.pin(side: .top(16), to: .bottom(registrationButton))
         
         let greyView = UIView()
         greyView.backgroundColor = CommonAsset.Colors.greyLight.color
@@ -153,11 +136,88 @@ private extension RegistrationViewController {
         enterButton.setTitleColor(CommonAsset.Colors.mainPurple.color, for: .normal)
         enterButton.titleLabel?.font = .systemFont(ofSize: 16)
         
+        firstCheckLabel.lineBreakMode = .byWordWrapping
+        firstCheckLabel.numberOfLines = 0
+        let attrString = getAttributeString(
+            text: Constants.checkLabel,
+            lineSpacing: 6,
+            range: NSRange(location: 0, length: 74),
+            secondRange: NSRange(location: 75, length: 15),
+            colors: [
+                CommonAsset.Colors.darkGrey.color,
+                CommonAsset.Colors.mainPurple.color
+            ]
+        )
+//        attrString.addAttributes([
+//            .strokeColor: CommonAsset.Colors.mainPurple.color
+//        ], range: NSRange(location: 71, length: Constants.checkLabel.count))
+        firstCheckLabel.attributedText = attrString
         
+        let stackView = UIStackView(arrangedSubviews: [firstCheckBox, firstCheckLabel])
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.spacing = 10
+        stackView.alignment = .leading
+        view.addSubview(stackView)
+        stackView.pinToSuperView(sides: .left(16), .right(-16))
+        stackView.pin(side: .top(16), to: .bottom(registrationButton))
+        
+        guard viewModel.type == .tutor else { return }
+        secondCheckLabel.text = Constants.offert
+        let secondStack = UIStackView(arrangedSubviews: [secondCheckBox, secondCheckLabel])
+        secondStack.axis = .horizontal
+        secondStack.distribution = .fill
+        secondStack.spacing = 10
+        secondStack.alignment = .leading
+        view.addSubview(secondStack)
+        secondStack.pinToSuperView(sides: .left(16))
+        secondStack.pin(side: .top(16), to: .bottom(stackView))
+        
+        let secondAttrString = getAttributeString(
+            text: Constants.offert,
+            lineSpacing: 6,
+            range: NSRange(location: 0, length: 12),
+            secondRange: NSRange(location: 13, length: 7),
+            colors: [
+                CommonAsset.Colors.darkGrey.color,
+                CommonAsset.Colors.mainPurple.color
+            ]
+        )
+        secondCheckLabel.attributedText = secondAttrString
+        
+    }
+    
+    func getAttributeString(
+        text: String,
+        lineSpacing: CGFloat,
+        range: NSRange,
+        secondRange: NSRange? = nil,
+        colors: [UIColor]
+    ) -> NSAttributedString {
+        let attrString = NSMutableAttributedString(string: text)
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = lineSpacing
+        attrString.addAttribute(.paragraphStyle, value: style, range: NSRange(location: 0, length: text.count))
+        attrString.addAttribute(.foregroundColor, value: colors.first, range: range)
+        guard let secondRange else { return attrString}
+        attrString.addAttribute(.foregroundColor, value: colors.last, range: secondRange)
+        return attrString
     }
 
     func bind() {
-        //bind funcions
+        backButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { view, _ in
+                view.viewModel.buttonAction(type: .back)
+            }
+            .store(in: &cancellableSet)
+        
+        registrationButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { view, _ in
+                view.viewModel.buttonAction(type: .registration(view.nameTextField.text))
+            }
+            .store(in: &cancellableSet)
     }
 
 }

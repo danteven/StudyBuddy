@@ -10,7 +10,7 @@ let project = Project(
             name: "Common",
             platform: .iOS,
             product: .staticFramework,
-            bundleId: "io.tuist.StudyBuddy.common",
+            bundleId: "StudyBuddy.common",
             deploymentTarget: .iOS(targetVersion: "13.0", devices: .iphone),
             sources: ["Common/**"],
             resources: ["Common/Resources/**"],

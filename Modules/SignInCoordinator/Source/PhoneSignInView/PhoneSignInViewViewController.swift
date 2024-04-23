@@ -80,9 +80,10 @@ final class PhoneSignInViewViewController: UIViewController {
         setup()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         tableCollectionView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .centeredHorizontally)
+        contentCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .centeredHorizontally, animated: false)
     }
     
     func createLayout() -> UICollectionViewFlowLayout {
@@ -221,6 +222,7 @@ private extension PhoneSignInViewViewController {
     
     func addInitialSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Items>()
+        snapshot.deleteAllItems()
         snapshot.appendSections([.phone, .email])
         snapshot.appendItems([.phone], toSection: .phone)
         snapshot.appendItems([.email], toSection: .email)
@@ -232,7 +234,14 @@ private extension PhoneSignInViewViewController {
         registerStudentButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { view, _ in
-                view.viewModel.buttonAction(type: .registerStudent)
+                view.viewModel.buttonAction(type: .registration(.student))
+            }
+            .store(in: &cancellableSet)
+        
+        registerTeacherButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { view, _ in
+                view.viewModel.buttonAction(type: .registration(.tutor))
             }
             .store(in: &cancellableSet)
     }
@@ -267,6 +276,5 @@ extension PhoneSignInViewViewController: UICollectionViewDelegate {
         guard collectionView == contentCollectionView,
               self.tableCollectionView.numberOfItems(inSection: 0) > indexPath.section
         else { return }
-        collectionView.selectItem(at: IndexPath(row: 0, section: indexPath.section), animated: true, scrollPosition: .top)
     }
 }
